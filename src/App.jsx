@@ -2,7 +2,6 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
 import { supabase } from "./supabase.js";
-
 export default function App() {
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
@@ -18,13 +17,7 @@ export default function App() {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const { error: bucketError } = await supabase.storage
-        .from("werkbon-pdfs")
-        .list("", { limit: 1 });
 
-      if (bucketError) {
-        throw bucketError;
-      }
 
       await emailjs.send(
         "service_cuht529",
