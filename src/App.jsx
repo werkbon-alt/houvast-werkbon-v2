@@ -203,6 +203,7 @@ export default function App() {
         <form onSubmit={handleSubmit}>
           <h2>Opdrachtgegevens</h2>
 
+          <label style={labelStyle}>Datum opdracht</label>
           <input
             name="datum"
             type="date"
@@ -292,12 +293,14 @@ export default function App() {
             </option>
           </select>
 
+          <label style={labelStyle}>Starttijd</label>
           <input
             name="starttijd"
             type="time"
             style={inputStyle}
           />
 
+          <label style={labelStyle}>Eindtijd</label>
           <input
             name="eindtijd"
             type="time"
@@ -333,6 +336,7 @@ export default function App() {
             required
           />
 
+          <label style={labelStyle}>Geboortedatum</label>
           <input
             name="geboortedatum"
             type="date"
@@ -527,6 +531,14 @@ const cardStyle = {
 const subStyle = {
   color: "#666",
   marginBottom: "30px",
+};
+
+const labelStyle = {
+  display: "block",
+  marginTop: "16px",
+  marginBottom: "4px",
+  fontWeight: "bold",
+  color: "#333",
 };
 
 const inputStyle = {
