@@ -44,12 +44,22 @@ datum: data.datum,
 
       const pdf = new jsPDF();
 
-      pdf.setFontSize(20);
-      pdf.text("Houvast Werkbon", 20, 20);
-      pdf.setFontSize(11);
+pdf.setFontSize(22);
+pdf.text("Houvast Digitale Werkbon", 20, 20);
+
+pdf.setFontSize(11);
+pdf.text("Houvast Postmortale Zorg BV", 20, 30);
+pdf.text("Zuid-Limburg – 24/7 dienstverlening", 20, 37);
+
+pdf.line(20, 43, 190, 43);
+
+pdf.setFontSize(13);
+pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 53);
+
+pdf.setFontSize(11);      
 pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 30);
 
-      let y = 50;
+      let y = 65;
 
       const addLine = (label, value) => {
         pdf.text(`${label}: ${value || "-"}`, 20, y);
