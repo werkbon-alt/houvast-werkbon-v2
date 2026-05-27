@@ -77,7 +77,10 @@ pdf.text(`Verzonden: ${verzendtijd}`, 20, 60);
 pdf.setFontSize(11);      
 pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 30);
 
-      let y = 72;
+      pdf.setFontSize(11);
+pdf.text(pdf.splitTextToSize(samenvatting, 170), 20, 68);
+
+let y = 105;
 
       const addLine = (label, value) => {
         pdf.text(`${label}: ${value || "-"}`, 20, y);
