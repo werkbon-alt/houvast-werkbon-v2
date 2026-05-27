@@ -1,7 +1,7 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
-import { supabase } from "./supabase";
+import { supabase } from "./supabase.js";
 
 export default function App() {
   const [status, setStatus] = useState("");
