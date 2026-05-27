@@ -16,6 +16,13 @@ const [opdrachtgever, setOpdrachtgever] = useState("");
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+    const handelingenLijst = formData.getAll("handelingen");
+
+if (overigHandeling.trim()) {
+  handelingenLijst.push(overigHandeling.trim());
+}
+
+const handelingenTekst = handelingenLijst.join(", ");
 const jaar = new Date().getFullYear();
 const uniekNummer = Date.now().toString().slice(-6);
 const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
@@ -39,7 +46,7 @@ datum: data.datum,
           geboortedatum: data.geboortedatum,
           adresOverlijden: data.adresOverlijden,
           overbrengenNaar: data.overbrengenNaar,
-          handelingen: data.handelingen,
+          handelingen: handelingenTekst,
           bijzonderheden: data.bijzonderheden,
         },
         "OlX1SMmu3sY3iNpMK"
