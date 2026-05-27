@@ -1,11 +1,10 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
-import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(
-  "https://pwmlnlmqnjqntfchqfbx.supabase.co",
-  "sb_publishable_WH0zAMdPqIPk3loonvN0ig_0GEjhkj_"
-);
+
+export default function App() {
+  const [status, setStatus] = useState("");
+  const [sending, setSending] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -18,8 +17,6 @@ const supabase = createClient(
     const data = Object.fromEntries(formData.entries());
 
     try {
-
-
       await emailjs.send(
         "service_cuht529",
         "template_z0ew1qb",
@@ -97,7 +94,7 @@ const supabase = createClient(
 
       pdf.save(`Werkbon_${data.datum || "zonder-datum"}.pdf`);
 
-      setStatus("Werkbon succesvol verzonden. Supabase verbinding werkt.");
+      setStatus("Werkbon succesvol verzonden en PDF opgeslagen.");
       form.reset();
     } catch (error) {
       console.error(error);
