@@ -1,14 +1,50 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 export default function App() {
   const [status, setStatus] = useState("");
+  const [sending, setSending] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setStatus("Werkbon succesvol verwerkt.");
-    e.target.reset();
+    setSending(true);
+    setStatus("Werkbon wordt verzonden...");
 
-    setTimeout(() => setStatus(""), 3000);
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      await emailjs.send(
+        "service_cuht529",
+        "template_z0ew1qb",
+        {
+          to_email: "werkbon@houvast-ontzorgen.net",
+          datum: data.datum,
+          opdrachtgever: data.opdrachtgever,
+          medewerker1: data.medewerker1,
+          medewerker2: data.medewerker2,
+          starttijd: data.starttijd,
+          eindtijd: data.eindtijd,
+          voertuig: data.voertuig,
+          naamOverledene: data.naamOverledene,
+          geboortedatum: data.geboortedatum,
+          adresOverlijden: data.adresOverlijden,
+          overbrengenNaar: data.overbrengenNaar,
+          handelingen: data.handelingen,
+          bijzonderheden: data.bijzonderheden,
+        },
+        "OlX1SMmu3sY3iNpMK"
+      );
+
+      setStatus("Werkbon succesvol verzonden naar kantoor.");
+      form.reset();
+    } catch (error) {
+      setStatus("Fout bij verzenden. Probeer opnieuw.");
+    } finally {
+      setSending(false);
+      setTimeout(() => setStatus(""), 4000);
+    }
   }
 
   return (
@@ -40,8 +76,8 @@ export default function App() {
           <textarea name="handelingen" placeholder="Handelingen" style={textareaStyle} />
           <textarea name="bijzonderheden" placeholder="Bijzonderheden" style={textareaStyle} />
 
-          <button type="submit" style={buttonStyle}>
-            VERZEND OPDRACHT NAAR KANTOOR
+          <button type="submit" style={buttonStyle} disabled={sending}>
+            {sending ? "BEZIG MET VERZENDEN..." : "VERZEND OPDRACHT NAAR KANTOOR"}
           </button>
         </form>
 
