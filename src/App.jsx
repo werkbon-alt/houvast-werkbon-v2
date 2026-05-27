@@ -18,6 +18,7 @@ export default function App() {
 const jaar = new Date().getFullYear();
 const uniekNummer = Date.now().toString().slice(-6);
 const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
+    const verzendtijd = new Date().toLocaleString("nl-NL");
     try {
       await emailjs.send(
         "service_cuht529",
@@ -25,6 +26,7 @@ const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
         {
 to_email: "werkbon@houvast-ontzorgen.net",
 werkbonnummer: werkbonnummer,
+verzendtijd: verzendtijd,
 datum: data.datum,
           opdrachtgever: data.opdrachtgever,
           medewerker1: data.medewerker1,
@@ -55,11 +57,11 @@ pdf.line(20, 43, 190, 43);
 
 pdf.setFontSize(13);
 pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 53);
-
+pdf.text(`Verzonden: ${verzendtijd}`, 20, 60);
 pdf.setFontSize(11);      
 pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 30);
 
-      let y = 65;
+      let y = 72;
 
       const addLine = (label, value) => {
         pdf.text(`${label}: ${value || "-"}`, 20, y);
