@@ -1,10 +1,11 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
-
-export default function App() {
-  const [status, setStatus] = useState("");
-  const [sending, setSending] = useState(false);
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(
+  "https://pwmlnlmqnjqntfchqfbx.supabase.co",
+  "sb_publishable_WH0zAMdPqIPk3loonvN0ig_0GEjhkj_"
+);
 
   async function handleSubmit(e) {
     e.preventDefault();
