@@ -13,89 +13,188 @@ export default function App() {
     setStatus("Werkbon wordt verzonden...");
 
     const form = e.target;
+
     const formData = new FormData(form);
+
     const data = Object.fromEntries(formData.entries());
 
     try {
-      // EERST MAIL VERSTUREN
+      // EMAIL VERSTUREN
       await emailjs.send(
         "service_cuht529",
         "template_z0ew1qb",
         {
           to_email: "werkbon@houvast-ontzorgen.net",
+
           datum: data.datum,
           opdrachtgever: data.opdrachtgever,
+
           medewerker1: data.medewerker1,
           medewerker2: data.medewerker2,
+
           starttijd: data.starttijd,
           eindtijd: data.eindtijd,
+
           voertuig: data.voertuig,
+
           naamOverledene: data.naamOverledene,
           geboortedatum: data.geboortedatum,
           adresOverlijden: data.adresOverlijden,
           overbrengenNaar: data.overbrengenNaar,
+
           handelingen: data.handelingen,
           bijzonderheden: data.bijzonderheden,
         },
         "OlX1SMmu3sY3iNpMK"
       );
 
-      // DAARNA PDF MAKEN
+      // PDF MAKEN
       const pdf = new jsPDF();
 
-      pdf.setFontSize(18);
+      pdf.setFontSize(20);
       pdf.text("Houvast Werkbon", 20, 20);
 
       pdf.setFontSize(11);
 
-      pdf.text(`Datum: ${data.datum || "-"}`, 20, 35);
-      pdf.text(`Opdrachtgever: ${data.opdrachtgever || "-"}`, 20, 45);
-      pdf.text(`Medewerker 1: ${data.medewerker1 || "-"}`, 20, 55);
-      pdf.text(`Medewerker 2: ${data.medewerker2 || "-"}`, 20, 65);
-      pdf.text(`Starttijd: ${data.starttijd || "-"}`, 20, 75);
-      pdf.text(`Eindtijd: ${data.eindtijd || "-"}`, 20, 85);
-      pdf.text(`Voertuig: ${data.voertuig || "-"}`, 20, 95);
+      let y = 40;
 
-      pdf.text("Overledene", 20, 115);
-
-      pdf.text(`Naam: ${data.naamOverledene || "-"}`, 20, 125);
-      pdf.text(`Geboortedatum: ${data.geboortedatum || "-"}`, 20, 135);
-      pdf.text(`Adres overlijden: ${data.adresOverlijden || "-"}`, 20, 145);
-      pdf.text(`Overbrengen naar: ${data.overbrengenNaar || "-"}`, 20, 155);
-
-      pdf.text("Handelingen:", 20, 175);
+      pdf.text(`Datum: ${data.datum || "-"}`, 20, y);
+      y += 10;
 
       pdf.text(
-        pdf.splitTextToSize(data.handelingen || "-", 170),
+        `Opdrachtgever: ${data.opdrachtgever || "-"}`,
         20,
-        185
+        y
       );
-
-      pdf.text("Bijzonderheden:", 20, 225);
+      y += 10;
 
       pdf.text(
-        pdf.splitTextToSize(data.bijzonderheden || "-", 170),
+        `Medewerker 1: ${data.medewerker1 || "-"}`,
         20,
-        235
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Medewerker 2: ${data.medewerker2 || "-"}`,
+        20,
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Starttijd: ${data.starttijd || "-"}`,
+        20,
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Eindtijd: ${data.eindtijd || "-"}`,
+        20,
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Voertuig: ${data.voertuig || "-"}`,
+        20,
+        y
+      );
+      y += 20;
+
+      pdf.setFontSize(14);
+      pdf.text("Overledene", 20, y);
+
+      y += 10;
+
+      pdf.setFontSize(11);
+
+      pdf.text(
+        `Naam: ${data.naamOverledene || "-"}`,
+        20,
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Geboortedatum: ${data.geboortedatum || "-"}`,
+        20,
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Adres overlijden: ${data.adresOverlijden || "-"}`,
+        20,
+        y
+      );
+      y += 10;
+
+      pdf.text(
+        `Overbrengen naar: ${data.overbrengenNaar || "-"}`,
+        20,
+        y
+      );
+      y += 20;
+
+      pdf.setFontSize(14);
+      pdf.text("Handelingen", 20, y);
+
+      y += 10;
+
+      pdf.setFontSize(11);
+
+      const handelingenText = pdf.splitTextToSize(
+        data.handelingen || "-",
+        170
       );
 
+      pdf.text(handelingenText, 20, y);
 
+      y += handelingenText.length * 7 + 15;
+
+      pdf.setFontSize(14);
+      pdf.text("Bijzonderheden", 20, y);
+
+      y += 10;
+
+      pdf.setFontSize(11);
+
+      const bijzonderhedenText = pdf.splitTextToSize(
+        data.bijzonderheden || "-",
+        170
+      );
+
+      pdf.text(bijzonderhedenText, 20, y);
+
+      // PDF DOWNLOAD
+      pdf.save(
+        `Werkbon_${data.datum || "zonder-datum"}.pdf`
+      );
 
       // STATUS
-      setStatus("Werkbon succesvol verzonden en PDF gemaakt.");
+      setStatus(
+        "Werkbon succesvol verzonden en PDF opgeslagen."
+      );
 
-      // FORM RESET
+      // RESET
       form.reset();
 
     } catch (error) {
       console.error(error);
-      setStatus("Fout bij verzenden. Probeer opnieuw.");
+
+      setStatus(
+        `Fout bij verzenden: ${
+          error?.text || error?.message || "onbekende fout"
+        }`
+      );
     } finally {
       setSending(false);
 
       setTimeout(() => {
         setStatus("");
-      }, 4000);
+      }, 5000);
     }
   }
 
