@@ -13,7 +13,33 @@ export default function App() {
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+const pdf = new jsPDF();
 
+pdf.setFontSize(18);
+pdf.text("Houvast Werkbon", 20, 20);
+
+pdf.setFontSize(11);
+pdf.text(`Datum: ${data.datum || "-"}`, 20, 35);
+pdf.text(`Opdrachtgever: ${data.opdrachtgever || "-"}`, 20, 45);
+pdf.text(`Medewerker 1: ${data.medewerker1 || "-"}`, 20, 55);
+pdf.text(`Medewerker 2: ${data.medewerker2 || "-"}`, 20, 65);
+pdf.text(`Starttijd: ${data.starttijd || "-"}`, 20, 75);
+pdf.text(`Eindtijd: ${data.eindtijd || "-"}`, 20, 85);
+pdf.text(`Voertuig: ${data.voertuig || "-"}`, 20, 95);
+
+pdf.text("Overledene", 20, 115);
+pdf.text(`Naam: ${data.naamOverledene || "-"}`, 20, 125);
+pdf.text(`Geboortedatum: ${data.geboortedatum || "-"}`, 20, 135);
+pdf.text(`Adres overlijden: ${data.adresOverlijden || "-"}`, 20, 145);
+pdf.text(`Overbrengen naar: ${data.overbrengenNaar || "-"}`, 20, 155);
+
+pdf.text("Handelingen:", 20, 175);
+pdf.text(pdf.splitTextToSize(data.handelingen || "-", 170), 20, 185);
+
+pdf.text("Bijzonderheden:", 20, 225);
+pdf.text(pdf.splitTextToSize(data.bijzonderheden || "-", 170), 20, 235);
+
+pdf.save(`Werkbon_${data.datum || "zonder-datum"}.pdf`);
     try {
       await emailjs.send(
         "service_cuht529",
