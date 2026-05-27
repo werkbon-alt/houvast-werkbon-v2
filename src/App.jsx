@@ -92,7 +92,13 @@ export default function App() {
       );
       pdf.text(bijzonderhedenText, 20, y);
 
-      pdf.save(`Werkbon_${data.datum || "zonder-datum"}.pdf`);
+      const veiligeNaam = (data.naamOverledene || "onbekend")
+  .replaceAll(" ", "_")
+  .replace(/[^a-zA-Z0-9_-]/g, "");
+
+const pdfBestandsnaam = `Werkbon_${data.datum || "zonder-datum"}_${veiligeNaam}.pdf`;
+
+pdf.save(pdfBestandsnaam);
 
       setStatus("Werkbon succesvol verzonden en PDF opgeslagen.");
       form.reset();
