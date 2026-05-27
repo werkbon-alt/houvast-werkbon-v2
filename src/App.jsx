@@ -79,7 +79,7 @@ export default function App() {
         235
       );
 
-      pdf.save(`Werkbon_${data.datum || "zonder-datum"}.pdf`);
+
 
       // STATUS
       setStatus("Werkbon succesvol verzonden en PDF gemaakt.");
