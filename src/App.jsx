@@ -15,14 +15,17 @@ export default function App() {
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
+const jaar = new Date().getFullYear();
+const uniekNummer = Date.now().toString().slice(-6);
+const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
     try {
       await emailjs.send(
         "service_cuht529",
         "template_z0ew1qb",
         {
-          to_email: "werkbon@houvast-ontzorgen.net",
-          datum: data.datum,
+to_email: "werkbon@houvast-ontzorgen.net",
+werkbonnummer: werkbonnummer,
+datum: data.datum,
           opdrachtgever: data.opdrachtgever,
           medewerker1: data.medewerker1,
           medewerker2: data.medewerker2,
@@ -44,8 +47,9 @@ export default function App() {
       pdf.setFontSize(20);
       pdf.text("Houvast Werkbon", 20, 20);
       pdf.setFontSize(11);
+pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 30);
 
-      let y = 40;
+      let y = 50;
 
       const addLine = (label, value) => {
         pdf.text(`${label}: ${value || "-"}`, 20, y);
@@ -101,7 +105,7 @@ const veiligeNaam = naamVoorBestand
   .replaceAll(" ", "_")
   .replace(/[^a-zA-Z0-9_-]/g, "");
 
-const pdfBestandsnaam = `Werkbon_${data.datum || "zonder-datum"}_${veiligeNaam}.pdf`;
+const pdfBestandsnaam = `Werkbon_${werkbonnummer}_${data.datum || "zonder-datum"}_${veiligeNaam}.pdf`;
 
 pdf.save(pdfBestandsnaam);
 
