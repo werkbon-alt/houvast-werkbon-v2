@@ -101,7 +101,7 @@ pdf.text(`Werkbonnummer: ${werkbonnummer}`, 20, 30);
       y += 10;
       pdf.setFontSize(11);
 
-      const handelingenText = pdf.splitTextToSize(data.handelingen || "-", 170);
+      const handelingenText = pdf.splitTextToSize(handelingenTekst || "-", 170);
       pdf.text(handelingenText, 20, y);
       y += handelingenText.length * 7 + 15;
 
