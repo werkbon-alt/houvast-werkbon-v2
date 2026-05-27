@@ -5,7 +5,8 @@ import jsPDF from "jspdf";
 export default function App() {
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
-
+const [opdrachtgever, setOpdrachtgever] = useState("");
+  const [overigHandeling, setOverigHandeling] = useState("");
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -146,7 +147,34 @@ pdf.save(pdfBestandsnaam);
           <h2>Opdrachtgegevens</h2>
 
           <input name="datum" type="date" style={inputStyle} required />
-          <input name="opdrachtgever" placeholder="Opdrachtgever" style={inputStyle} required />
+          <select
+  name="opdrachtgever"
+  style={inputStyle}
+  required
+  value={opdrachtgever}
+  onChange={(e) => setOpdrachtgever(e.target.value)}
+>
+  <option value="" disabled>
+    Kies opdrachtgever
+  </option>
+
+  <option value="Walpot">Walpot</option>
+  <option value="Walburgis">Walburgis</option>
+  <option value="Sassen Dielemans">Sassen Dielemans</option>
+  <option value="Monuta">Monuta</option>
+  <option value="Dela">Dela</option>
+  <option value="Math Pijls">Math Pijls</option>
+  <option value="Anders">Anders...</option>
+</select>
+
+{opdrachtgever === "Anders" && (
+  <input
+    name="opdrachtgeverAnders"
+    placeholder="Naam opdrachtgever"
+    style={inputStyle}
+    required
+  />
+)}
           <select
   name="medewerker1"
   style={inputStyle}
@@ -215,9 +243,93 @@ pdf.save(pdfBestandsnaam);
 
           <h2>Werkzaamheden</h2>
 
-          <textarea name="handelingen" placeholder="Handelingen" style={textareaStyle} />
+          
           <textarea name="bijzonderheden" placeholder="Bijzonderheden" style={textareaStyle} />
+<div style={{ marginTop: "20px" }}>
+  <label>
+    <input type="checkbox" name="handelingen" value="Overbrengen" />
+    {" "}Overbrengen
+  </label>
 
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Verzorgen & kleden" />
+    {" "}Verzorgen & kleden
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Inkisten" />
+    {" "}Inkisten
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Bedopbaring thuis" />
+    {" "}Bedopbaring thuis
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Kistopbaring thuis" />
+    {" "}Kistopbaring thuis
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Thuiscontrole" />
+    {" "}Thuiscontrole
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Politiemelding" />
+    {" "}Politiemelding
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Zorgtaken uitvaartcentrum" />
+    {" "}Zorgtaken uitvaartcentrum
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input type="checkbox" name="handelingen" value="Grafdelving" />
+    {" "}Grafdelving
+  </label>
+
+  <br /><br />
+
+  <label>
+    <input
+      type="checkbox"
+      checked={overigHandeling !== ""}
+      onChange={(e) => {
+        if (!e.target.checked) {
+          setOverigHandeling("");
+        }
+      }}
+    />
+    {" "}Overig
+  </label>
+
+  <input
+    type="text"
+    placeholder="Overige handeling"
+    style={inputStyle}
+    value={overigHandeling}
+    onChange={(e) => setOverigHandeling(e.target.value)}
+  />
+</div>
           <button type="submit" style={buttonStyle} disabled={sending}>
             {sending ? "BEZIG MET VERZENDEN..." : "VERZEND OPDRACHT NAAR KANTOOR"}
           </button>
