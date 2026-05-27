@@ -178,7 +178,17 @@ pdf.save(pdfBestandsnaam);
 </select>
           <input name="starttijd" type="time" style={inputStyle} />
           <input name="eindtijd" type="time" style={inputStyle} />
-          <input name="voertuig" placeholder="Voertuig" style={inputStyle} />
+          <select
+  name="voertuig"
+  style={inputStyle}
+  defaultValue=""
+>
+  <option value="">Kies voertuig</option>
+  <option value="Ford">Ford</option>
+  <option value="Mercedes">Mercedes</option>
+  <option value="Renault">Renault</option>
+  <option value="Eigen vervoer">Eigen vervoer</option>
+</select>
 
           <h2>Overledene</h2>
 
