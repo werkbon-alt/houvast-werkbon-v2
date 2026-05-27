@@ -147,8 +147,35 @@ pdf.save(pdfBestandsnaam);
 
           <input name="datum" type="date" style={inputStyle} required />
           <input name="opdrachtgever" placeholder="Opdrachtgever" style={inputStyle} required />
-          <input name="medewerker1" placeholder="Medewerker 1" style={inputStyle} required />
-          <input name="medewerker2" placeholder="Medewerker 2" style={inputStyle} />
+          <select
+  name="medewerker1"
+  style={inputStyle}
+  required
+  defaultValue=""
+>
+  <option value="" disabled>
+    Kies medewerker 1
+  </option>
+
+  <option value="Nicky">Nicky</option>
+  <option value="Danny">Danny</option>
+  <option value="Mike">Mike</option>
+  <option value="Freelancer">Freelancer</option>
+</select>
+          <select
+  name="medewerker2"
+  style={inputStyle}
+  defaultValue=""
+>
+  <option value="">
+    Kies medewerker 2
+  </option>
+
+  <option value="Nicky">Nicky</option>
+  <option value="Danny">Danny</option>
+  <option value="Mike">Mike</option>
+  <option value="Freelancer">Freelancer</option>
+</select>
           <input name="starttijd" type="time" style={inputStyle} />
           <input name="eindtijd" type="time" style={inputStyle} />
           <input name="voertuig" placeholder="Voertuig" style={inputStyle} />
