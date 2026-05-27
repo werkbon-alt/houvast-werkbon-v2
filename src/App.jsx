@@ -92,7 +92,12 @@ export default function App() {
       );
       pdf.text(bijzonderhedenText, 20, y);
 
-      const veiligeNaam = (data.naamOverledene || "onbekend")
+const naamVoorBestand =
+  data.naamOverledene?.trim() ||
+  data.opdrachtgever?.trim() ||
+  "onbekend";
+
+const veiligeNaam = naamVoorBestand
   .replaceAll(" ", "_")
   .replace(/[^a-zA-Z0-9_-]/g, "");
 
