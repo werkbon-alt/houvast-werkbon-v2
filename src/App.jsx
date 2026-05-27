@@ -23,19 +23,27 @@ if (overigHandeling.trim()) {
 }
 
 const handelingenTekst = handelingenLijst.join(", ");
+    const samenvatting = `
+Werkbon: ${werkbonnummer}
+Opdrachtgever: ${data.opdrachtgever || "-"}
+Medewerkers: ${data.medewerker1 || "-"}${data.medewerker2 ? " & " + data.medewerker2 : ""}
+Handelingen: ${handelingenTekst || "-"}
+Verzonden: ${verzendtijd}
+`;
 const jaar = new Date().getFullYear();
 const uniekNummer = Date.now().toString().slice(-6);
 const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
     const verzendtijd = new Date().toLocaleString("nl-NL");
     try {
-      await emailjs.send(
-        "service_cuht529",
-        "template_z0ew1qb",
-        {
-to_email: "werkbon@houvast-ontzorgen.net",
-werkbonnummer: werkbonnummer,
-verzendtijd: verzendtijd,
-datum: data.datum,
+await emailjs.send(
+  "service_cuht529",
+  "template_z0ew1qb",
+  {
+    to_email: "werkbon@houvast-ontzorgen.net",
+    werkbonnummer: werkbonnummer,
+    verzendtijd: verzendtijd,
+    samenvatting: samenvatting,
+    datum: data.datum,
           opdrachtgever: data.opdrachtgever,
           medewerker1: data.medewerker1,
           medewerker2: data.medewerker2,
