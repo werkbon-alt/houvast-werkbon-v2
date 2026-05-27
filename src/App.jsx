@@ -157,10 +157,18 @@ pdf.save(pdfBestandsnaam);
     Kies medewerker 1
   </option>
 
-  <option value="Nicky">Nicky</option>
-  <option value="Danny">Danny</option>
-  <option value="Mike">Mike</option>
-  <option value="Freelancer">Freelancer</option>
+ <option value="Nicky">Nicky</option>
+<option value="Roland">Roland</option>
+<option value="Cindy">Cindy</option>
+<option value="Cécile">Cécile</option>
+<option value="Mike">Mike</option>
+<option value="Nelleke">Nelleke</option>
+<option value="Dylano">Dylano</option>
+<option value="Gerald">Gerald</option>
+<option value="Marc">Marc</option>
+<option value="Angélique">Angélique</option>
+<option value="Bianca">Bianca</option>
+<option value="Externe/inhuur">Externe/inhuur</option>
 </select>
           <select
   name="medewerker2"
@@ -171,10 +179,18 @@ pdf.save(pdfBestandsnaam);
     Kies medewerker 2
   </option>
 
-  <option value="Nicky">Nicky</option>
-  <option value="Danny">Danny</option>
-  <option value="Mike">Mike</option>
-  <option value="Freelancer">Freelancer</option>
+<option value="Nicky">Nicky</option>
+<option value="Roland">Roland</option>
+<option value="Cindy">Cindy</option>
+<option value="Cécile">Cécile</option>
+<option value="Mike">Mike</option>
+<option value="Nelleke">Nelleke</option>
+<option value="Dylano">Dylano</option>
+<option value="Gerald">Gerald</option>
+<option value="Marc">Marc</option>
+<option value="Angélique">Angélique</option>
+<option value="Bianca">Bianca</option>
+<option value="Externe/inhuur">Externe/inhuur</option>
 </select>
           <input name="starttijd" type="time" style={inputStyle} />
           <input name="eindtijd" type="time" style={inputStyle} />
