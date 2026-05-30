@@ -3,7 +3,7 @@ import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
 
 const GOOGLE_SHEET_URL =
-  "https://script.google.com/macros/s/AKfycbwMw0EBTnDXiXxQSvBmqXQd_02jiF4c_CiEOIKgRoE/exec";
+  "https://script.google.com/macros/s/AKfycbzgTXIHhPWgCCDCYOiWfywCYT0mU6Ix-XC9y9qd1s7RunEKIwh45ZFEKRFged2ZMOZ2/exec";
 
 function berekenUren(starttijd, eindtijd) {
   if (!starttijd || !eindtijd) return "";
