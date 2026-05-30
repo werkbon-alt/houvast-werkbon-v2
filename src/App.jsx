@@ -2,6 +2,25 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
 
+const GOOGLE_SHEET_URL =
+  "https://script.google.com/macros/s/AKfycbzgTXIHhPWgCCDCYOiWfywCYT0mU6Ix-XC9y9qd1s7RunEKIwh45ZFEKRFged2ZMOZ2/exec";
+
+function berekenUren(starttijd, eindtijd) {
+  if (!starttijd || !eindtijd) return "";
+
+  const [startUur, startMin] = starttijd.split(":").map(Number);
+  const [eindUur, eindMin] = eindtijd.split(":").map(Number);
+
+  let start = startUur * 60 + startMin;
+  let eind = eindUur * 60 + eindMin;
+
+  if (eind < start) {
+    eind += 24 * 60;
+  }
+
+  return ((eind - start) / 60).toFixed(2);
+}
+
 export default function App() {
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
@@ -24,7 +43,6 @@ export default function App() {
     }
 
     const handelingenTekst = handelingenLijst.join(", ");
-
     const data = Object.fromEntries(formData.entries());
 
     const jaar = new Date().getFullYear();
@@ -32,10 +50,16 @@ export default function App() {
     const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
 
     const verzendtijd = new Date().toLocaleString("nl-NL");
+    const uren = berekenUren(data.starttijd, data.eindtijd);
+
+    const gekozenOpdrachtgever =
+      opdrachtgever === "Anders"
+        ? data.opdrachtgeverAnders
+        : data.opdrachtgever;
 
     const naamVoorBestand =
       data.naamOverledene?.trim() ||
-      data.opdrachtgever?.trim() ||
+      gekozenOpdrachtgever?.trim() ||
       "onbekend";
 
     const veiligeNaam = naamVoorBestand
@@ -45,6 +69,29 @@ export default function App() {
     const pdfBestandsnaam = `Werkbon_${werkbonnummer}_${data.datum || "zonder-datum"}_${veiligeNaam}.pdf`;
 
     try {
+      await fetch(GOOGLE_SHEET_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify({
+          datum: data.datum,
+          werkbonnummer: werkbonnummer,
+          opdrachtgever: gekozenOpdrachtgever,
+          medewerker1: data.medewerker1,
+          medewerker2: data.medewerker2,
+          starttijd: data.starttijd,
+          eindtijd: data.eindtijd,
+          uren: uren,
+          voertuig: data.voertuig,
+          naamOverledene: data.naamOverledene,
+          overbrengenNaar: data.overbrengenNaar,
+          handelingen: handelingenTekst,
+          bijzonderheden: data.bijzonderheden,
+        }),
+      });
+
       await emailjs.send(
         "service_cuht529",
         "template_z0ew1qb",
@@ -52,27 +99,17 @@ export default function App() {
           to_email: "werkbon@houvast-ontzorgen.net",
           werkbonnummer: werkbonnummer,
           verzendtijd: verzendtijd,
-
           datum: data.datum,
-
-          opdrachtgever:
-            opdrachtgever === "Anders"
-              ? data.opdrachtgeverAnders
-              : data.opdrachtgever,
-
+          opdrachtgever: gekozenOpdrachtgever,
           medewerker1: data.medewerker1,
           medewerker2: data.medewerker2,
-
           starttijd: data.starttijd,
           eindtijd: data.eindtijd,
-
           voertuig: data.voertuig,
-
           naamOverledene: data.naamOverledene,
           geboortedatum: data.geboortedatum,
           adresOverlijden: data.adresOverlijden,
           overbrengenNaar: data.overbrengenNaar,
-
           handelingen: handelingenTekst,
           bijzonderheden: data.bijzonderheden,
         },
@@ -86,7 +123,7 @@ export default function App() {
 
       pdf.setFontSize(11);
       pdf.text("Houvast Postmortale Zorg BV", 20, 30);
-      pdf.text("Zuid-Limburg – 24/7 dienstverlening", 20, 37);
+      pdf.text("Zuid-Limburg - 24/7 dienstverlening", 20, 37);
 
       pdf.line(20, 43, 190, 43);
 
@@ -104,20 +141,12 @@ export default function App() {
       };
 
       addLine("Datum", data.datum);
-
-      addLine(
-        "Opdrachtgever",
-        opdrachtgever === "Anders"
-          ? data.opdrachtgeverAnders
-          : data.opdrachtgever
-      );
-
+      addLine("Opdrachtgever", gekozenOpdrachtgever);
       addLine("Medewerker 1", data.medewerker1);
       addLine("Medewerker 2", data.medewerker2);
-
       addLine("Starttijd", data.starttijd);
       addLine("Eindtijd", data.eindtijd);
-
+      addLine("Uren", uren);
       addLine("Voertuig", data.voertuig);
 
       y += 10;
@@ -126,7 +155,6 @@ export default function App() {
       pdf.text("Overledene", 20, y);
 
       y += 10;
-
       pdf.setFontSize(11);
 
       addLine("Naam", data.naamOverledene);
@@ -140,7 +168,6 @@ export default function App() {
       pdf.text("Handelingen", 20, y);
 
       y += 10;
-
       pdf.setFontSize(11);
 
       const handelingenPdf = pdf.splitTextToSize(
@@ -156,7 +183,6 @@ export default function App() {
       pdf.text("Bijzonderheden", 20, y);
 
       y += 10;
-
       pdf.setFontSize(11);
 
       const bijzonderhedenText = pdf.splitTextToSize(
@@ -168,12 +194,11 @@ export default function App() {
 
       pdf.save(pdfBestandsnaam);
 
-      setStatus("Werkbon succesvol verzonden en PDF opgeslagen.");
+      setStatus("Werkbon succesvol verzonden, opgeslagen en PDF gemaakt.");
 
       form.reset();
       setOpdrachtgever("");
       setOverigHandeling("");
-
     } catch (error) {
       console.error(error);
 
@@ -196,20 +221,13 @@ export default function App() {
       <section style={cardStyle}>
         <h1>Houvast Digitale Werkbon</h1>
 
-        <p style={subStyle}>
-          Mobiele werkbon voor onderweg
-        </p>
+        <p style={subStyle}>Mobiele werkbon voor onderweg</p>
 
         <form onSubmit={handleSubmit}>
           <h2>Opdrachtgegevens</h2>
 
           <label style={labelStyle}>Datum opdracht</label>
-          <input
-            name="datum"
-            type="date"
-            style={inputStyle}
-            required
-          />
+          <input name="datum" type="date" style={inputStyle} required />
 
           <select
             name="opdrachtgever"
@@ -221,12 +239,9 @@ export default function App() {
             <option value="" disabled>
               Kies opdrachtgever
             </option>
-
             <option value="Walpot">Walpot</option>
             <option value="Walburgis">Walburgis</option>
-            <option value="Sassen Dielemans">
-              Sassen Dielemans
-            </option>
+            <option value="Sassen Dielemans">Sassen Dielemans</option>
             <option value="Monuta">Monuta</option>
             <option value="Dela">Dela</option>
             <option value="Math Pijls">Math Pijls</option>
@@ -251,7 +266,6 @@ export default function App() {
             <option value="" disabled>
               Kies medewerker 1
             </option>
-
             <option value="Nicky">Nicky</option>
             <option value="Roland">Roland</option>
             <option value="Cindy">Cindy</option>
@@ -263,20 +277,11 @@ export default function App() {
             <option value="Marc">Marc</option>
             <option value="Angélique">Angélique</option>
             <option value="Bianca">Bianca</option>
-            <option value="Externe/inhuur">
-              Externe/inhuur
-            </option>
+            <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-          <select
-            name="medewerker2"
-            style={inputStyle}
-            defaultValue=""
-          >
-            <option value="">
-              Kies medewerker 2
-            </option>
-
+          <select name="medewerker2" style={inputStyle} defaultValue="">
+            <option value="">Kies medewerker 2</option>
             <option value="Nicky">Nicky</option>
             <option value="Roland">Roland</option>
             <option value="Cindy">Cindy</option>
@@ -288,43 +293,20 @@ export default function App() {
             <option value="Marc">Marc</option>
             <option value="Angélique">Angélique</option>
             <option value="Bianca">Bianca</option>
-            <option value="Externe/inhuur">
-              Externe/inhuur
-            </option>
+            <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
           <label style={labelStyle}>Starttijd</label>
-          <input
-            name="starttijd"
-            type="time"
-            style={inputStyle}
-          />
+          <input name="starttijd" type="time" style={inputStyle} />
 
           <label style={labelStyle}>Eindtijd</label>
-          <input
-            name="eindtijd"
-            type="time"
-            style={inputStyle}
-          />
+          <input name="eindtijd" type="time" style={inputStyle} />
 
-          <select
-            name="voertuig"
-            style={inputStyle}
-            defaultValue=""
-          >
+          <select name="voertuig" style={inputStyle} defaultValue="">
             <option value="">Kies voertuig</option>
-
-            <option value="Mercedes EQV">
-              Mercedes EQV
-            </option>
-
-            <option value="Ford">
-              Ford
-            </option>
-
-            <option value="Eigen auto">
-              Eigen auto
-            </option>
+            <option value="Mercedes EQV">Mercedes EQV</option>
+            <option value="Ford">Ford</option>
+            <option value="Eigen auto">Eigen auto</option>
           </select>
 
           <h2>Overledene</h2>
@@ -337,11 +319,7 @@ export default function App() {
           />
 
           <label style={labelStyle}>Geboortedatum</label>
-          <input
-            name="geboortedatum"
-            type="date"
-            style={inputStyle}
-          />
+          <input name="geboortedatum" type="date" style={inputStyle} />
 
           <input
             name="adresOverlijden"
@@ -358,104 +336,28 @@ export default function App() {
           <h2>Werkzaamheden</h2>
 
           <div style={{ marginTop: "20px" }}>
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Overbrengen"
-              />
-              {" "}Overbrengen
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Verzorgen & kleden"
-              />
-              {" "}Verzorgen & kleden
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Inkisten"
-              />
-              {" "}Inkisten
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Bedopbaring thuis"
-              />
-              {" "}Bedopbaring thuis
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Kistopbaring thuis"
-              />
-              {" "}Kistopbaring thuis
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Thuiscontrole"
-              />
-              {" "}Thuiscontrole
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Politiemelding"
-              />
-              {" "}Politiemelding
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Zorgtaken uitvaartcentrum"
-              />
-              {" "}Zorgtaken uitvaartcentrum
-            </label>
-
-            <br /><br />
-
-            <label>
-              <input
-                type="checkbox"
-                name="handelingen"
-                value="Grafdelving"
-              />
-              {" "}Grafdelving
-            </label>
-
-            <br /><br />
+            {[
+              "Overbrengen",
+              "Verzorgen & kleden",
+              "Inkisten",
+              "Bedopbaring thuis",
+              "Kistopbaring thuis",
+              "Thuiscontrole",
+              "Politiemelding",
+              "Zorgtaken uitvaartcentrum",
+              "Grafdelving",
+            ].map((handeling) => (
+              <div key={handeling} style={{ marginBottom: "18px" }}>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="handelingen"
+                    value={handeling}
+                  />{" "}
+                  {handeling}
+                </label>
+              </div>
+            ))}
 
             <label>
               <input
@@ -466,8 +368,8 @@ export default function App() {
                     setOverigHandeling("");
                   }
                 }}
-              />
-              {" "}Overig
+              />{" "}
+              Overig
             </label>
 
             <input
@@ -475,9 +377,7 @@ export default function App() {
               placeholder="Overige handeling"
               style={inputStyle}
               value={overigHandeling}
-              onChange={(e) =>
-                setOverigHandeling(e.target.value)
-              }
+              onChange={(e) => setOverigHandeling(e.target.value)}
             />
           </div>
 
@@ -487,25 +387,17 @@ export default function App() {
             style={textareaStyle}
           />
 
-          <button
-            type="submit"
-            style={buttonStyle}
-            disabled={sending}
-          >
+          <button type="submit" style={buttonStyle} disabled={sending}>
             {sending
               ? "BEZIG MET VERZENDEN..."
               : "VERZEND OPDRACHT NAAR KANTOOR"}
           </button>
         </form>
 
-        {status && (
-          <div style={statusStyle}>
-            {status}
-          </div>
-        )}
+        {status && <div style={statusStyle}>{status}</div>}
 
         <p style={footerStyle}>
-          Houvast Postmortale Zorg BV – Zuid-Limburg – 24/7 dienstverlening
+          Houvast Postmortale Zorg BV - Zuid-Limburg - 24/7 dienstverlening
         </p>
       </section>
     </main>
