@@ -296,11 +296,25 @@ export default function App() {
             <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-          <label style={labelStyle}>Starttijd</label>
-          <input name="starttijd" type="time" style={inputStyle} />
+<label style={labelStyle}>Starttijd</label>
+<input
+  name="starttijd"
+  type="text"
+  placeholder="08:30"
+  value={formData.starttijd}
+  onChange={handleChange}
+  style={inputStyle}
+/>
 
-          <label style={labelStyle}>Eindtijd</label>
-          <input name="eindtijd" type="time" style={inputStyle} />
+<label style={labelStyle}>Eindtijd</label>
+<input
+  name="eindtijd"
+  type="text"
+  placeholder="10:15"
+  value={formData.eindtijd}
+  onChange={handleChange}
+  style={inputStyle}
+/>
 
           <select name="voertuig" style={inputStyle} defaultValue="">
             <option value="">Kies voertuig</option>
