@@ -5,25 +5,27 @@ import jsPDF from "jspdf";
 const GOOGLE_SHEET_URL =
   "https://script.google.com/macros/s/AKfycbzgTXIHhPWgCCDCYOiWfywCYT0mU6Ix-XC9y9qd1s7RunEKIwh45ZFEKRFged2ZMOZ2/exec";
 
-<label style={labelStyle}>Starttijd</label>
-<input
-  name="starttijd"
-  type="text"
-  placeholder="08:30"
-  inputMode="numeric"
-  pattern="[0-9]{2}:[0-9]{2}"
-  style={inputStyle}
-/>
+function berekenUren(starttijd, eindtijd) {
+  if (!starttijd || !eindtijd) return "";
 
-<label style={labelStyle}>Eindtijd</label>
-<input
-  name="eindtijd"
-  type="text"
-  placeholder="10:15"
-  inputMode="numeric"
-  pattern="[0-9]{2}:[0-9]{2}"
-  style={inputStyle}
-/>
+  const tijdRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+
+  if (!tijdRegex.test(starttijd) || !tijdRegex.test(eindtijd)) {
+    return "";
+  }
+
+  const [startUur, startMin] = starttijd.split(":").map(Number);
+  const [eindUur, eindMin] = eindtijd.split(":").map(Number);
+
+  let start = startUur * 60 + startMin;
+  let eind = eindUur * 60 + eindMin;
+
+  if (eind < start) {
+    eind += 24 * 60;
+  }
+
+  return ((eind - start) / 60).toFixed(2);
+}
 
 export default function App() {
   const [status, setStatus] = useState("");
@@ -70,7 +72,9 @@ export default function App() {
       .replaceAll(" ", "_")
       .replace(/[^a-zA-Z0-9_-]/g, "");
 
-    const pdfBestandsnaam = `Werkbon_${werkbonnummer}_${data.datum || "zonder-datum"}_${veiligeNaam}.pdf`;
+    const pdfBestandsnaam = `Werkbon_${werkbonnummer}_${
+      data.datum || "zonder-datum"
+    }_${veiligeNaam}.pdf`;
 
     try {
       await fetch(GOOGLE_SHEET_URL, {
@@ -109,6 +113,7 @@ export default function App() {
           medewerker2: data.medewerker2,
           starttijd: data.starttijd,
           eindtijd: data.eindtijd,
+          uren: uren,
           voertuig: data.voertuig,
           naamOverledene: data.naamOverledene,
           geboortedatum: data.geboortedatum,
@@ -300,25 +305,29 @@ export default function App() {
             <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-<label style={labelStyle}>Starttijd</label>
-<input
-  name="starttijd"
-  type="text"
-  placeholder="08:30"
-  value={formData.starttijd}
-  onChange={handleChange}
-  style={inputStyle}
-/>
+          <label style={labelStyle}>Starttijd</label>
+          <input
+            name="starttijd"
+            type="text"
+            placeholder="08:30"
+            inputMode="numeric"
+            pattern="[0-9]{2}:[0-9]{2}"
+            style={inputStyle}
+          />
 
-<label style={labelStyle}>Eindtijd</label>
-<input
-  name="eindtijd"
-  type="text"
-  placeholder="10:15"
-  value={formData.eindtijd}
-  onChange={handleChange}
-  style={inputStyle}
-/>
+          <label style={labelStyle}>Eindtijd</label>
+          <input
+            name="eindtijd"
+            type="text"
+            placeholder="10:15"
+            inputMode="numeric"
+            pattern="[0-9]{2}:[0-9]{2}"
+            style={inputStyle}
+          />
+
+          <p style={helpTextStyle}>
+            Vul tijden in als HH:MM, bijvoorbeeld 08:30 of 22:15.
+          </p>
 
           <select name="voertuig" style={inputStyle} defaultValue="">
             <option value="">Kies voertuig</option>
@@ -459,6 +468,12 @@ const inputStyle = {
   border: "1px solid #ccc",
   fontSize: "16px",
   boxSizing: "border-box",
+};
+
+const helpTextStyle = {
+  marginTop: "8px",
+  color: "#666",
+  fontSize: "14px",
 };
 
 const textareaStyle = {
