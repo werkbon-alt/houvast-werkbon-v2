@@ -305,29 +305,35 @@ export default function App() {
             <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-          <label style={labelStyle}>Starttijd</label>
-          <input
-            name="starttijd"
-            type="text"
-            placeholder="08:30"
-            inputMode="text"
-            pattern="[0-9]{2}:[0-9]{2}"
-            style={inputStyle}
-          />
+<label style={labelStyle}>Starttijd</label>
 
-          <label style={labelStyle}>Eindtijd</label>
-          <input
-            name="eindtijd"
-            type="text"
-            placeholder="10:15"
-            inputMode="text"
-            pattern="[0-9]{2}:[0-9]{2}"
-            style={inputStyle}
-          />
+<input
+  name="starttijd"
+  type="time"
+  style={inputStyle}
+/>
 
-          <p style={helpTextStyle}>
-            Vul tijden in als HH:MM, bijvoorbeeld 08:30 of 22:15.
-          </p>
+<input
+  name="starttijdHandmatig"
+  type="text"
+  placeholder="Werkt tijd kiezen niet? Vul handmatig in, bijv. 08:30"
+  style={inputStyle}
+/>
+
+<label style={labelStyle}>Eindtijd</label>
+
+<input
+  name="eindtijd"
+  type="time"
+  style={inputStyle}
+/>
+
+<input
+  name="eindtijdHandmatig"
+  type="text"
+  placeholder="Werkt tijd kiezen niet? Vul handmatig in, bijv. 10:15"
+  style={inputStyle}
+/>
 
           <select name="voertuig" style={inputStyle} defaultValue="">
             <option value="">Kies voertuig</option>
