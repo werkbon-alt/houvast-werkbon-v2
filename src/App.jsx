@@ -310,7 +310,7 @@ export default function App() {
             name="starttijd"
             type="text"
             placeholder="08:30"
-            inputMode="numeric"
+            inputMode="text"
             pattern="[0-9]{2}:[0-9]{2}"
             style={inputStyle}
           />
@@ -320,7 +320,7 @@ export default function App() {
             name="eindtijd"
             type="text"
             placeholder="10:15"
-            inputMode="numeric"
+            inputMode="text"
             pattern="[0-9]{2}:[0-9]{2}"
             style={inputStyle}
           />
