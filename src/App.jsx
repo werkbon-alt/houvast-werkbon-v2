@@ -14,8 +14,8 @@ function berekenUren(starttijd, eindtijd) {
     return "";
   }
 
-  const [startUur, startMin] = starttijd.split(":").map(Number);
-  const [eindUur, eindMin] = eindtijd.split(":").map(Number);
+const starttijd = data.starttijdHandmatig || data.starttijd;
+const eindtijd = data.eindtijdHandmatig || data.eindtijd;
 
   let start = startUur * 60 + startMin;
   let eind = eindUur * 60 + eindMin;
