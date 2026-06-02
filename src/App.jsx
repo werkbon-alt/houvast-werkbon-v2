@@ -5,21 +5,25 @@ import jsPDF from "jspdf";
 const GOOGLE_SHEET_URL =
   "https://script.google.com/macros/s/AKfycbzgTXIHhPWgCCDCYOiWfywCYT0mU6Ix-XC9y9qd1s7RunEKIwh45ZFEKRFged2ZMOZ2/exec";
 
-function berekenUren(starttijd, eindtijd) {
-  if (!starttijd || !eindtijd) return "";
+<label style={labelStyle}>Starttijd</label>
+<input
+  name="starttijd"
+  type="text"
+  placeholder="08:30"
+  inputMode="numeric"
+  pattern="[0-9]{2}:[0-9]{2}"
+  style={inputStyle}
+/>
 
-  const [startUur, startMin] = starttijd.split(":").map(Number);
-  const [eindUur, eindMin] = eindtijd.split(":").map(Number);
-
-  let start = startUur * 60 + startMin;
-  let eind = eindUur * 60 + eindMin;
-
-  if (eind < start) {
-    eind += 24 * 60;
-  }
-
-  return ((eind - start) / 60).toFixed(2);
-}
+<label style={labelStyle}>Eindtijd</label>
+<input
+  name="eindtijd"
+  type="text"
+  placeholder="10:15"
+  inputMode="numeric"
+  pattern="[0-9]{2}:[0-9]{2}"
+  style={inputStyle}
+/>
 
 export default function App() {
   const [status, setStatus] = useState("");
