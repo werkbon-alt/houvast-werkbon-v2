@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
 
@@ -31,8 +31,28 @@ export default function App() {
   const [status, setStatus] = useState("");
   const [sending, setSending] = useState(false);
   const [opdrachtgever, setOpdrachtgever] = useState("");
+  const [urlData, setUrlData] = useState({});
   const [overigHandeling, setOverigHandeling] = useState("");
+  
+const [urlData, setUrlData] = useState({});
+  useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
 
+  const nieuweUrlData = {
+    datum: params.get("datum") || "",
+    opdrachtgever: params.get("opdrachtgever") || "",
+    medewerker1: params.get("medewerker1") || "",
+    medewerker2: params.get("medewerker2") || "",
+    locatie: params.get("locatie") || "",
+    planningId: params.get("planningId") || "",
+  };
+
+  setUrlData(nieuweUrlData);
+
+  if (nieuweUrlData.opdrachtgever) {
+    setOpdrachtgever(nieuweUrlData.opdrachtgever);
+  }
+}, []);
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -239,7 +259,13 @@ export default function App() {
           <h2>Opdrachtgegevens</h2>
 
           <label style={labelStyle}>Datum opdracht</label>
-          <input name="datum" type="date" style={inputStyle} required />
+          <input
+  name="datum"
+  type="date"
+  style={inputStyle}
+  required
+  defaultValue={urlData.datum}
+/>
 
           <select
             name="opdrachtgever"
@@ -269,11 +295,12 @@ export default function App() {
             />
           )}
 
-          <select
-            name="medewerker1"
-            style={inputStyle}
-            required
-            defaultValue=""
+<select
+  name="medewerker1"
+  style={inputStyle}
+  required
+  defaultValue={urlData.medewerker1 || ""}
+>
           >
             <option value="" disabled>
               Kies medewerker 1
@@ -292,7 +319,11 @@ export default function App() {
             <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-          <select name="medewerker2" style={inputStyle} defaultValue="">
+         <select
+  name="medewerker2"
+  style={inputStyle}
+  defaultValue={urlData.medewerker2 || ""}
+>
             <option value="">Kies medewerker 2</option>
             <option value="Nicky">Nicky</option>
             <option value="Roland">Roland</option>
