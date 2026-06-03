@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { jsPDF } from "jspdf";
+import emailjs from "@emailjs/browser";
 
 const API_URL = "https://script.google.com/macros/s/AKfycbzgTXIHhPWgCCDCYOiWfywCYT0mU6Ix-XC9y9qd1s7RunEKIwh45ZFEKRFged2ZMOZ2/exec";
 
@@ -30,46 +32,59 @@ export default function App() {
     setStatus("Versturen...");
 
     try {
-      const resp = await fetch(API_URL, {
+      // Verstuur naar Google Sheets
+      await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const result = await resp.json();
 
-      if (result.success) {
-        setStatus("Werkbon succesvol verzonden!");
-        // reset form
-        setData({
-          datum: "",
-          werkbonnummer: "",
-          opdrachtgever: "",
-          medewerker1: "",
-          medewerker2: "",
-          starttijd: "",
-          eindtijd: "",
-          uren: "",
-          voertuig: "",
-          naamOverledene: "",
-          overbrengenNaar: "",
-          handelingen: "",
-          bijzonderheden: "",
-        });
-      } else {
-        setStatus("Er is iets fout gegaan.");
-      }
+      // PDF genereren
+      const doc = new jsPDF();
+      doc.setFontSize(14);
+      doc.text("Werkbon Houvast Postmortale Zorg", 20, 20);
+      Object.entries(data).forEach(([key, value], i) => {
+        doc.text(`${key}: ${value}`, 20, 30 + i * 8);
+      });
+      doc.save(`${data.werkbonnummer || "werkbon"}.pdf`);
+
+      // Mailen via EmailJS
+      await emailjs.send(
+        "service_cuht529", 
+        "template_z0ew1qb", 
+        data, 
+        "OlX1SMmu3sY3iNpMK"
+      );
+
+      setStatus("Werkbon succesvol verzonden!");
+      // reset form
+      setData({
+        datum: "",
+        werkbonnummer: "",
+        opdrachtgever: "",
+        medewerker1: "",
+        medewerker2: "",
+        starttijd: "",
+        eindtijd: "",
+        uren: "",
+        voertuig: "",
+        naamOverledene: "",
+        overbrengenNaar: "",
+        handelingen: "",
+        bijzonderheden: "",
+      });
     } catch (err) {
       console.error(err);
-      setStatus("Er is iets fout gegaan.");
+      setStatus("Er is iets fout gegaan. Controleer de connecties.");
     }
   }
 
   return (
-    <main style={{ fontFamily: "Arial", padding: "20px", maxWidth: "700px", margin: "0 auto" }}>
+    <main style={{ fontFamily: "Arial", maxWidth: "700px", margin: "0 auto", padding: "20px" }}>
       <h1>Digitale Werkbon Houvast</h1>
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: "12px" }}>
         <label>Datum
-          <input type="date" name="datum" value={data.datum} onChange={handleChange} required />
+          <input type="text" name="datum" value={data.datum} onChange={handleChange} placeholder="DD-MM-YYYY" required />
         </label>
 
         <label>Werkbonnummer
@@ -118,7 +133,7 @@ export default function App() {
         </label>
 
         <label>Handelingen
-          <input type="text" name="handelingen" value={data.handelingen} onChange={handleChange} placeholder="Meerdere handelingen, gescheiden door komma" />
+          <input type="text" name="handelingen" value={data.handelingen} onChange={handleChange} placeholder="Meerdere, gescheiden door komma" />
         </label>
 
         <label>Bijzonderheden
