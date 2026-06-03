@@ -14,8 +14,8 @@ function berekenUren(starttijd, eindtijd) {
     return "";
   }
 
-const starttijd = data.starttijdHandmatig || data.starttijd;
-const eindtijd = data.eindtijdHandmatig || data.eindtijd;
+  const [startUur, startMin] = starttijd.split(":").map(Number);
+  const [eindUur, eindMin] = eindtijd.split(":").map(Number);
 
   let start = startUur * 60 + startMin;
   let eind = eindUur * 60 + eindMin;
@@ -51,12 +51,15 @@ export default function App() {
     const handelingenTekst = handelingenLijst.join(", ");
     const data = Object.fromEntries(formData.entries());
 
+    const gekozenStarttijd = data.starttijdHandmatig || data.starttijd;
+    const gekozenEindtijd = data.eindtijdHandmatig || data.eindtijd;
+
     const jaar = new Date().getFullYear();
     const uniekNummer = Date.now().toString().slice(-6);
     const werkbonnummer = `HB-${jaar}-${uniekNummer}`;
 
     const verzendtijd = new Date().toLocaleString("nl-NL");
-    const uren = berekenUren(data.starttijd, data.eindtijd);
+    const uren = berekenUren(gekozenStarttijd, gekozenEindtijd);
 
     const gekozenOpdrachtgever =
       opdrachtgever === "Anders"
@@ -89,8 +92,8 @@ export default function App() {
           opdrachtgever: gekozenOpdrachtgever,
           medewerker1: data.medewerker1,
           medewerker2: data.medewerker2,
-          starttijd: data.starttijd,
-          eindtijd: data.eindtijd,
+          starttijd: gekozenStarttijd,
+          eindtijd: gekozenEindtijd,
           uren: uren,
           voertuig: data.voertuig,
           naamOverledene: data.naamOverledene,
@@ -111,8 +114,8 @@ export default function App() {
           opdrachtgever: gekozenOpdrachtgever,
           medewerker1: data.medewerker1,
           medewerker2: data.medewerker2,
-          starttijd: data.starttijd,
-          eindtijd: data.eindtijd,
+          starttijd: gekozenStarttijd,
+          eindtijd: gekozenEindtijd,
           uren: uren,
           voertuig: data.voertuig,
           naamOverledene: data.naamOverledene,
@@ -153,8 +156,8 @@ export default function App() {
       addLine("Opdrachtgever", gekozenOpdrachtgever);
       addLine("Medewerker 1", data.medewerker1);
       addLine("Medewerker 2", data.medewerker2);
-      addLine("Starttijd", data.starttijd);
-      addLine("Eindtijd", data.eindtijd);
+      addLine("Starttijd", gekozenStarttijd);
+      addLine("Eindtijd", gekozenEindtijd);
       addLine("Uren", uren);
       addLine("Voertuig", data.voertuig);
 
@@ -305,35 +308,30 @@ export default function App() {
             <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-<label style={labelStyle}>Starttijd</label>
+          <label style={labelStyle}>Starttijd</label>
+          <input name="starttijd" type="time" style={inputStyle} />
 
-<input
-  name="starttijd"
-  type="time"
-  style={inputStyle}
-/>
+          <input
+            name="starttijdHandmatig"
+            type="text"
+            placeholder="Tijd handmatig invullen, bijv. 08:30"
+            style={inputStyle}
+          />
 
-<input
-  name="starttijdHandmatig"
-  type="text"
-  placeholder="Werkt tijd kiezen niet? Vul handmatig in, bijv. 08:30"
-  style={inputStyle}
-/>
+          <label style={labelStyle}>Eindtijd</label>
+          <input name="eindtijd" type="time" style={inputStyle} />
 
-<label style={labelStyle}>Eindtijd</label>
+          <input
+            name="eindtijdHandmatig"
+            type="text"
+            placeholder="Tijd handmatig invullen, bijv. 10:15"
+            style={inputStyle}
+          />
 
-<input
-  name="eindtijd"
-  type="time"
-  style={inputStyle}
-/>
-
-<input
-  name="eindtijdHandmatig"
-  type="text"
-  placeholder="Werkt tijd kiezen niet? Vul handmatig in, bijv. 10:15"
-  style={inputStyle}
-/>
+          <p style={helpTextStyle}>
+            Werkt de tijdkiezer niet op uw telefoon? Vul de tijd dan handmatig
+            in als HH:MM, bijvoorbeeld 08:30.
+          </p>
 
           <select name="voertuig" style={inputStyle} defaultValue="">
             <option value="">Kies voertuig</option>
@@ -352,7 +350,12 @@ export default function App() {
           />
 
           <label style={labelStyle}>Geboortedatum</label>
-          <input name="geboortedatum" type="date" style={inputStyle} />
+          <input
+            name="geboortedatum"
+            type="text"
+            placeholder="Bijv. 12-03-1948 of onbekend"
+            style={inputStyle}
+          />
 
           <input
             name="adresOverlijden"
@@ -480,6 +483,7 @@ const helpTextStyle = {
   marginTop: "8px",
   color: "#666",
   fontSize: "14px",
+  lineHeight: "1.5",
 };
 
 const textareaStyle = {
