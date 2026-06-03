@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import jsPDF from "jspdf";
 
@@ -28,14 +28,23 @@ function berekenUren(starttijd, eindtijd) {
 }
 
 export default function App() {
-  const [status, setStatus] = useState("");
-  const [sending, setSending] = useState(false);
-  const [opdrachtgever, setOpdrachtgever] = useState("");
-  const [urlData, setUrlData] = useState({});
-  const [overigHandeling, setOverigHandeling] = useState("");
-  
-const [urlData, setUrlData] = useState({});
-  useEffect(() => {
+const initialParams = new URLSearchParams(window.location.search);
+
+const initialUrlData = {
+  datum: initialParams.get("datum") || "",
+  opdrachtgever: initialParams.get("opdrachtgever") || "",
+  medewerker1: initialParams.get("medewerker1") || "",
+  medewerker2: initialParams.get("medewerker2") || "",
+  locatie: initialParams.get("locatie") || "",
+  planningId: initialParams.get("planningId") || "",
+};
+
+const [status, setStatus] = useState("");
+const [sending, setSending] = useState(false);
+const [opdrachtgever, setOpdrachtgever] = useState(initialUrlData.opdrachtgever);
+const [overigHandeling, setOverigHandeling] = useState("");
+const [urlData] = useState(initialUrlData);
+
   const params = new URLSearchParams(window.location.search);
 
   const nieuweUrlData = {
