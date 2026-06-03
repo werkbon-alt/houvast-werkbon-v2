@@ -12,7 +12,9 @@ export default function App() {
     medewerker1: "",
     medewerker2: "",
     starttijd: "",
+    starttijdHandmatig: "",
     eindtijd: "",
+    eindtijdHandmatig: "",
     uren: "",
     voertuig: "",
     naamOverledene: "",
@@ -32,7 +34,7 @@ export default function App() {
     setStatus("Versturen...");
 
     try {
-      // Verstuur naar Google Sheets
+      // Verzenden naar Google Sheets
       await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -50,14 +52,13 @@ export default function App() {
 
       // Mailen via EmailJS
       await emailjs.send(
-        "service_cuht529", 
-        "template_z0ew1qb", 
-        data, 
+        "service_cuht529",
+        "template_z0ew1qb",
+        data,
         "OlX1SMmu3sY3iNpMK"
       );
 
       setStatus("Werkbon succesvol verzonden!");
-      // reset form
       setData({
         datum: "",
         werkbonnummer: "",
@@ -65,7 +66,9 @@ export default function App() {
         medewerker1: "",
         medewerker2: "",
         starttijd: "",
+        starttijdHandmatig: "",
         eindtijd: "",
+        eindtijdHandmatig: "",
         uren: "",
         voertuig: "",
         naamOverledene: "",
@@ -75,7 +78,7 @@ export default function App() {
       });
     } catch (err) {
       console.error(err);
-      setStatus("Er is iets fout gegaan. Controleer de connecties.");
+      setStatus("Er is iets fout gegaan.");
     }
   }
 
@@ -92,23 +95,62 @@ export default function App() {
         </label>
 
         <label>Opdrachtgever
-          <input type="text" name="opdrachtgever" value={data.opdrachtgever} onChange={handleChange} required />
+          <select name="opdrachtgever" value={data.opdrachtgever} onChange={handleChange} required>
+            <option value="">Selecteer opdrachtgever</option>
+            <option value="Walpot">Walpot</option>
+            <option value="Walburgis">Walburgis</option>
+            <option value="Sassen Dielemans">Sassen Dielemans</option>
+            <option value="Monuta">Monuta</option>
+            <option value="Dela">Dela</option>
+            <option value="Math Pijls">Math Pijls</option>
+            <option value="Anders">Anders</option>
+          </select>
         </label>
 
         <label>Medewerker 1
-          <input type="text" name="medewerker1" value={data.medewerker1} onChange={handleChange} required />
+          <select name="medewerker1" value={data.medewerker1} onChange={handleChange} required>
+            <option value="">Selecteer medewerker</option>
+            <option value="Nicky">Nicky</option>
+            <option value="Roland">Roland</option>
+            <option value="Cindy">Cindy</option>
+            <option value="Cécile">Cécile</option>
+            <option value="Mike">Mike</option>
+            <option value="Nelleke">Nelleke</option>
+            <option value="Dylano">Dylano</option>
+            <option value="Gerald">Gerald</option>
+            <option value="Marc">Marc</option>
+            <option value="Angélique">Angélique</option>
+            <option value="Bianca">Bianca</option>
+            <option value="Externe/inhuur">Externe/inhuur</option>
+          </select>
         </label>
 
         <label>Medewerker 2
-          <input type="text" name="medewerker2" value={data.medewerker2} onChange={handleChange} />
+          <select name="medewerker2" value={data.medewerker2} onChange={handleChange}>
+            <option value="">Selecteer medewerker</option>
+            <option value="Nicky">Nicky</option>
+            <option value="Roland">Roland</option>
+            <option value="Cindy">Cindy</option>
+            <option value="Cécile">Cécile</option>
+            <option value="Mike">Mike</option>
+            <option value="Nelleke">Nelleke</option>
+            <option value="Dylano">Dylano</option>
+            <option value="Gerald">Gerald</option>
+            <option value="Marc">Marc</option>
+            <option value="Angélique">Angélique</option>
+            <option value="Bianca">Bianca</option>
+            <option value="Externe/inhuur">Externe/inhuur</option>
+          </select>
         </label>
 
         <label>Starttijd
-          <input type="time" name="starttijd" value={data.starttijd} onChange={handleChange} required />
+          <input type="time" name="starttijd" value={data.starttijd} onChange={handleChange} />
+          <input type="text" name="starttijdHandmatig" value={data.starttijdHandmatig} onChange={handleChange} placeholder="Voor Android" />
         </label>
 
         <label>Eindtijd
-          <input type="time" name="eindtijd" value={data.eindtijd} onChange={handleChange} required />
+          <input type="time" name="eindtijd" value={data.eindtijd} onChange={handleChange} />
+          <input type="text" name="eindtijdHandmatig" value={data.eindtijdHandmatig} onChange={handleChange} placeholder="Voor Android" />
         </label>
 
         <label>Uren
