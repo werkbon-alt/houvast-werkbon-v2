@@ -5,6 +5,17 @@ import jsPDF from "jspdf";
 const GOOGLE_SHEET_URL =
   "https://script.google.com/macros/s/AKfycbzgTXIHhPWgCCDCYOiWfywCYT0mU6Ix-XC9y9qd1s7RunEKIwh45ZFEKRFged2ZMOZ2/exec";
 
+const initialParams = new URLSearchParams(window.location.search);
+
+const initialUrlData = {
+  datum: initialParams.get("datum") || "",
+  opdrachtgever: initialParams.get("opdrachtgever") || "",
+  medewerker1: initialParams.get("medewerker1") || "",
+  medewerker2: initialParams.get("medewerker2") || "",
+  locatie: initialParams.get("locatie") || "",
+  planningId: initialParams.get("planningId") || "",
+};
+
 function berekenUren(starttijd, eindtijd) {
   if (!starttijd || !eindtijd) return "";
 
@@ -28,40 +39,13 @@ function berekenUren(starttijd, eindtijd) {
 }
 
 export default function App() {
-const initialParams = new URLSearchParams(window.location.search);
+  const [status, setStatus] = useState("");
+  const [sending, setSending] = useState(false);
+  const [opdrachtgever, setOpdrachtgever] = useState(
+    initialUrlData.opdrachtgever
+  );
+  const [overigHandeling, setOverigHandeling] = useState("");
 
-const initialUrlData = {
-  datum: initialParams.get("datum") || "",
-  opdrachtgever: initialParams.get("opdrachtgever") || "",
-  medewerker1: initialParams.get("medewerker1") || "",
-  medewerker2: initialParams.get("medewerker2") || "",
-  locatie: initialParams.get("locatie") || "",
-  planningId: initialParams.get("planningId") || "",
-};
-
-const [status, setStatus] = useState("");
-const [sending, setSending] = useState(false);
-const [opdrachtgever, setOpdrachtgever] = useState(initialUrlData.opdrachtgever);
-const [overigHandeling, setOverigHandeling] = useState("");
-const [urlData] = useState(initialUrlData);
-
-  const params = new URLSearchParams(window.location.search);
-
-  const nieuweUrlData = {
-    datum: params.get("datum") || "",
-    opdrachtgever: params.get("opdrachtgever") || "",
-    medewerker1: params.get("medewerker1") || "",
-    medewerker2: params.get("medewerker2") || "",
-    locatie: params.get("locatie") || "",
-    planningId: params.get("planningId") || "",
-  };
-
-  setUrlData(nieuweUrlData);
-
-  if (nieuweUrlData.opdrachtgever) {
-    setOpdrachtgever(nieuweUrlData.opdrachtgever);
-  }
-}, []);
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -129,6 +113,7 @@ const [urlData] = useState(initialUrlData);
           overbrengenNaar: data.overbrengenNaar,
           handelingen: handelingenTekst,
           bijzonderheden: data.bijzonderheden,
+          planningId: data.planningId || "",
         }),
       });
 
@@ -153,6 +138,7 @@ const [urlData] = useState(initialUrlData);
           overbrengenNaar: data.overbrengenNaar,
           handelingen: handelingenTekst,
           bijzonderheden: data.bijzonderheden,
+          planningId: data.planningId || "",
         },
         "OlX1SMmu3sY3iNpMK"
       );
@@ -181,6 +167,7 @@ const [urlData] = useState(initialUrlData);
         y += 10;
       };
 
+      addLine("Planning ID", data.planningId);
       addLine("Datum", data.datum);
       addLine("Opdrachtgever", gekozenOpdrachtgever);
       addLine("Medewerker 1", data.medewerker1);
@@ -264,17 +251,29 @@ const [urlData] = useState(initialUrlData);
 
         <p style={subStyle}>Mobiele werkbon voor onderweg</p>
 
+        {initialUrlData.planningId && (
+          <div style={planningBoxStyle}>
+            Werkbon gestart vanuit planning: <strong>{initialUrlData.planningId}</strong>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
+          <input
+            type="hidden"
+            name="planningId"
+            value={initialUrlData.planningId}
+          />
+
           <h2>Opdrachtgegevens</h2>
 
           <label style={labelStyle}>Datum opdracht</label>
           <input
-  name="datum"
-  type="date"
-  style={inputStyle}
-  required
-  defaultValue={urlData.datum}
-/>
+            name="datum"
+            type="date"
+            style={inputStyle}
+            required
+            defaultValue={initialUrlData.datum}
+          />
 
           <select
             name="opdrachtgever"
@@ -304,12 +303,11 @@ const [urlData] = useState(initialUrlData);
             />
           )}
 
-<select
-  name="medewerker1"
-  style={inputStyle}
-  required
-  defaultValue={urlData.medewerker1 || ""}
->
+          <select
+            name="medewerker1"
+            style={inputStyle}
+            required
+            defaultValue={initialUrlData.medewerker1}
           >
             <option value="" disabled>
               Kies medewerker 1
@@ -328,11 +326,11 @@ const [urlData] = useState(initialUrlData);
             <option value="Externe/inhuur">Externe/inhuur</option>
           </select>
 
-         <select
-  name="medewerker2"
-  style={inputStyle}
-  defaultValue={urlData.medewerker2 || ""}
->
+          <select
+            name="medewerker2"
+            style={inputStyle}
+            defaultValue={initialUrlData.medewerker2}
+          >
             <option value="">Kies medewerker 2</option>
             <option value="Nicky">Nicky</option>
             <option value="Roland">Roland</option>
@@ -401,6 +399,7 @@ const [urlData] = useState(initialUrlData);
             name="adresOverlijden"
             placeholder="Adres overlijden"
             style={inputStyle}
+            defaultValue={initialUrlData.locatie}
           />
 
           <input
@@ -499,6 +498,15 @@ const cardStyle = {
 const subStyle = {
   color: "#666",
   marginBottom: "30px",
+};
+
+const planningBoxStyle = {
+  marginBottom: "20px",
+  padding: "14px",
+  borderRadius: "12px",
+  background: "#eef2ff",
+  color: "#3730a3",
+  fontWeight: "bold",
 };
 
 const labelStyle = {
