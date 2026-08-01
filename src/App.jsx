@@ -265,6 +265,7 @@ export default function App() {
             <option value="Dela">Dela</option>
             <option value="Math Pijls">Math Pijls</option>
             <option value="Houvast">Houvast</option>
+            <option value="Lou Debeij persoonlijk afscheid">Lou Debeij persoonlijk afscheid</option>
             <option value="Anders">Anders...</option>
           </select>
 
@@ -288,7 +289,7 @@ export default function App() {
             </option>
             <option value="Nicky">Nicky</option>
             <option value="Roland">Roland</option>
-            <option value="Nicky">Lindsay</option>
+            <option value="Lindsay">Lindsay</option>
             <option value="Cindy">Cindy</option>
             <option value="Cécile">Cécile</option>
             <option value="Mike">Mike</option>
@@ -308,6 +309,7 @@ export default function App() {
           >
             <option value="">Kies medewerker 2</option>
             <option value="Nicky">Nicky</option>
+            <option value="Lindsay">Lindsay</option>
             <option value="Roland">Roland</option>
             <option value="Cindy">Cindy</option>
             <option value="Cécile">Cécile</option>
