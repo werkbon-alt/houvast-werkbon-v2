@@ -288,6 +288,7 @@ export default function App() {
             </option>
             <option value="Nicky">Nicky</option>
             <option value="Roland">Roland</option>
+            <option value="Nicky">Lindsay</option>
             <option value="Cindy">Cindy</option>
             <option value="Cécile">Cécile</option>
             <option value="Mike">Mike</option>
