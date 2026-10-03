@@ -288,7 +288,7 @@ export default function App() {
               Kies medewerker 1
             </option>
             <option value="Nicky">Nicky</option>
-            <option value="Roland">Roland</option>
+            <option value="Levina">Roland</option>
             <option value="Lindsay">Lindsay</option>
             <option value="Cindy">Cindy</option>
             <option value="Cécile">Cécile</option>
@@ -310,7 +310,7 @@ export default function App() {
             <option value="">Kies medewerker 2</option>
             <option value="Nicky">Nicky</option>
             <option value="Lindsay">Lindsay</option>
-            <option value="Roland">Roland</option>
+            <option value="Levina">Roland</option>
             <option value="Cindy">Cindy</option>
             <option value="Cécile">Cécile</option>
             <option value="Mike">Mike</option>
