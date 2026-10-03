@@ -396,6 +396,8 @@ export default function App() {
               "Kistopbaring thuis",
               "Thuiscontrole",
               "Politiemelding",
+              "begeleiden Rouwbezoek",
+              "assistentie lijkschouw",
               "Zorgtaken uitvaartcentrum",
               "Grafdelving",
             ].map((handeling) => (
@@ -432,14 +434,14 @@ export default function App() {
           </div>
 
           <textarea
-            name="bijzonderheden"
+            name="bijzonderheden, noteer belangrijke informatie"
             placeholder="Bijzonderheden"
             style={textareaStyle}
           />
 
           <button type="submit" style={buttonStyle} disabled={sending}>
             {sending
-              ? "BEZIG MET VERZENDEN..."
+              ? "BEZIG MET VERZENDEN... Bedankt voor de moeite"
               : "VERZEND OPDRACHT NAAR KANTOOR"}
           </button>
         </form>
@@ -447,7 +449,7 @@ export default function App() {
         {status && <div style={statusStyle}>{status}</div>}
 
         <p style={footerStyle}>
-          Houvast Postmortale Zorg BV - Zuid-Limburg - 24/7 dienstverlening
+          Houvast Postmortale Zorg - Zuid-Limburg - 24/7 dienstverlening
         </p>
       </section>
     </main>
