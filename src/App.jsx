@@ -435,14 +435,14 @@ export default function App() {
 
           <textarea
             name="bijzonderheden, noteer belangrijke informatie"
-            placeholder="Bijzonderheden"
+            placeholder="Bijzonderheden, noteer hier belangrijke informatie"
             style={textareaStyle}
           />
 
           <button type="submit" style={buttonStyle} disabled={sending}>
             {sending
               ? "BEZIG MET VERZENDEN... Bedankt voor de moeite"
-              : "VERZEND OPDRACHT NAAR KANTOOR"}
+              : "VERZEND OPDRACHT NAAR NICKY"}
           </button>
         </form>
 
